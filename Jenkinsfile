@@ -42,6 +42,18 @@ pipeline{
                         echo "Error during checkout stage: ${e}"
                         throw e
                     }
+                    def scmVars = checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'CleanBeforeCheckout']],
+                    userRemoteConfigs: [[
+                        url: 'git@github.com:0zari0/jenkins-interactive.git',
+                        credentialsId: 'jenkins-private-key',
+                        refspec: '+refs/heads/*:refs/remotes/origin/*',
+                        extensions: [[$class: 'CloneOption', timeout: 10, depth: 1, shallow: true, honorRefspec: true]]
+                    ]]
+                    ])
                 }
             }
         }
