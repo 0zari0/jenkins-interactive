@@ -10,15 +10,15 @@ pipeline{
         choice(
             name: 'server-ip',
             choices: ['172.20.5.6','172.20.5.5'],
-            desscreption: 'selections of yhedeplozment variables'
+            description: 'selections of yhedeplozment variables'
         )
         // choice{
         //     name: 'dockerbvalksdb',
         //     choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-        //     desscreption: 'select the registry branch'
+        //     description: 'select the registry branch'
         // }
     }
-    stage{
+    stages{
         stage('Interactive deployment'){
             steps{
                 script{
