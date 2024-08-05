@@ -13,11 +13,11 @@ pipeline{
             choices: ['172.20.5.6','172.20.5.5'],
             description: 'selections of yhedeplozment variables'
         )
-        choice{
-            name: 'dockerbvalksdb',
-            choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-            description: 'select the registry branch'
-        }
+        // choice{
+        //     name: 'dockerbvalksdb',
+        //     choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
+        //     description: 'select the registry branch'
+        // }
     }
     stages{
         stage('Interactive deployment'){
