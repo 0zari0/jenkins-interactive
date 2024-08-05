@@ -32,7 +32,7 @@ pipeline{
                             extensions: [[$class: 'CleanBeforeCheckout']],
                             userRemoteConfigs: [[
                                 url: 'git@github.com:0zari0/jenkins-interactive.git',
-                                credentialsId: 'GIT_SSH_KEY'
+                                credentialsId: 'jenkins-private-key'
                             ]]
                         ])
                         echo "Checked out successfully."
