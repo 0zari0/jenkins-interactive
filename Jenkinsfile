@@ -13,7 +13,7 @@ pipeline{
             desscreption: 'selections of yhedeplozment variables'
         )
         choice{
-            name: 'docker-repo',
+            name: 'dockerbvalksdb',
             choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
             desscreption: 'select the registry branch'
         }
@@ -26,7 +26,7 @@ pipeline{
                     def inputTAg
 
                     echo "the selected avbsa ${params.server-ip}"
-                    
+
                 }
             }
         }
