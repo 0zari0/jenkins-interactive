@@ -9,7 +9,7 @@ pipeline{
     }
     parameters{
         choice(
-            name: 'server-ip',
+            name: 'server_ip',
             choices: ['172.20.5.6','172.20.5.5'],
             description: 'selections of yhedeplozment variables'
         )
@@ -23,7 +23,7 @@ pipeline{
         stage('Interactive deployment'){
             steps{
                 script{
-                    echo "the selected is  ${params.server-ip}"
+                    echo "the selected is  ${params.server_ip}"
 
                 }
             }
