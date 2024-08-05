@@ -23,10 +23,7 @@ pipeline{
         stage('Interactive deployment'){
             steps{
                 script{
-                    def inputIp
-                    def inputTAg
-
-                    echo "the selected avbsa ${params.server-ip}"
+                    echo "the selected is  ${params.server-ip}"
 
                 }
             }
