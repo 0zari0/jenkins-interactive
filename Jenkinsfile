@@ -11,11 +11,11 @@ pipeline{
             choices: ['INT','KTN','HUN'],
             description: 'selections of test enviroment options'
         )
-        choice{
-            name: 'doker_Repository',
-            choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-            description: 'selection of the repository'
-        }
+        // choice{
+        //     name: 'doker_Repository',
+        //     choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
+        //     description: 'selection of the repository'
+        // }
     }
     stages{
         stage('Interactive deployment'){
@@ -23,7 +23,6 @@ pipeline{
                 script{
                     echo "the selected test envirament is  ${params.test_Environment}"
                     echo "the selected repository is ${params.doker_Repository}"
-
                 }
             }
         }
