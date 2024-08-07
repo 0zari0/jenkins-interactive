@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Interactive deployment') {
             agent {
-                label 'jenkins-agent'
+                label 'jenkins-agent1'
             }
             steps {
                 script {
