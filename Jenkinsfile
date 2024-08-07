@@ -34,7 +34,7 @@ pipeline{
                 }
             }
         }
-        stage('avelaible'){
+        stage('available'){
             steps{
                 script {
                     def serverAvailable = false
@@ -43,7 +43,7 @@ pipeline{
                         sh "ping -c 1 ${env.inputIp}"
                         serverAvailable = true
                     } catch (Exception e) {
-                        echo "Server is not available: ${e.message}"
+                        echo "Server is not c: ${e.message}"
                     }
 
                     if (serverAvailable) {
@@ -51,6 +51,7 @@ pipeline{
                     } else {
                         error "Server ${env.inputIp} is not available."
                     }
+                }
             }
         }
     }
