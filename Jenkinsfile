@@ -13,11 +13,6 @@ pipeline{
             name: 'FIRST_NAME',
             trim: true
         }
-        // choice(
-        //     name: 'ip',
-        //     choices: ['INT','KTN','HUN'],
-        //     description: 'selections of test enviroment options'
-        // )
         choice{
             name: 'doker_Repository',
             choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
@@ -25,16 +20,6 @@ pipeline{
         }
     }
     stages{
-        // stage("input"){
-        //     steps{
-        //         script{
-        //             def inputIp
-        //             def input registry
-
-        //             def userInput = input
-        //         }
-        //     }
-        // }
         stage('Interactive deployment'){
             steps{
                 script{
