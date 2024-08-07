@@ -59,23 +59,17 @@ pipeline{
         stage('List Docker Repositories') {
             steps {
                 script {
+                    // Run the curl command to get the list of Docker repositories
+                    def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
 
-                        try {
+                    // Parse the JSON response
+                    def jsonResponse = readJSON text: response
 
-                            def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
-
-                            // Parse the JSON response
-                            def jsonResponse = readJSON text: response.content
-
-                            // Print out the list of repositories
-                            def repositories = jsonResponse.repositories
-                            echo "Docker Repositories:"
-                            for (repo in repositories) {
-                                echo "- ${repo}"
-                            }
-                        } catch (Exception e) {
-                            echo "Error during HTTP request: ${e}"
-                        }
+                    // Print out the list of repositories
+                    def repositories = jsonResponse.repositories
+                    echo "Docker Repositories:"
+                    for (repo in repositories) {
+                        echo "- ${repo}"
                     }
                 }
             }
