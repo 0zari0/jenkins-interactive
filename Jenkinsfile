@@ -7,9 +7,7 @@ pipeline {
     }
     stages {
         stage('Interactive deployment') {
-            agent {
-                label 'jenkins-agent1'
-            }
+            agent any
             steps {
                 script {
                     def userInput = input(id: 'userInput', message: 'Provide your inputs', parameters: [
