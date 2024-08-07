@@ -29,10 +29,15 @@ pipeline{
                     inputIp = userInput.Ip?:''
                     inputRepo = userInput.Repo?:''
 
-                    echo ("ip: ${inputIp}")
-                    echo ("repo: ${inputRepo}")
+
 
                 }
+            }
+        }
+        stage('avelaible'){
+            steps{
+                echo ("ip: ${inputIp}")
+                echo ("repo: ${inputRepo}")
             }
         }
     }
