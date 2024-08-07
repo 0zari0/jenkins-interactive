@@ -1,4 +1,4 @@
-Pipeline{
+pipeline{
     agent any
     environment {
         GIT_SSH_KEY = credentials('jenkins-private-key')  
