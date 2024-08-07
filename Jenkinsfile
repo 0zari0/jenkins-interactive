@@ -6,17 +6,18 @@ pipeline{
         DOCKER_REGISTRY = '172.20.0.36:5000'  
     }
     stages{
-        stage("asking"){
+        stage("input"){
             steps{
                 script{
                     def inputIp
                     def inputRepo
 
                     def userInput = input(
-                        id: 'userInput', message: 'adj meg valamit:?',
+                        id: 'userInput', message: 'Plese fill out:?',
                         parameters: [
-                            string(defaultValue: 'INT',
+                            string(defaultValue: 'pl: 172.20.5.5',
                                     description: 'ip of the server',
+                                    trim: true,
                                     name: 'Ip'),
                             choice(
                                 name: 'Repo',
