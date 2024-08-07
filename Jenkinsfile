@@ -59,17 +59,24 @@ pipeline{
                 script {
                     withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                         // Make an HTTP GET request to the Docker Registry API to list repositories
-                        def response = httpRequest url: "${DOCKER_REGISTRY_URL}/v2/_catalog", httpMode: 'GET', contentType: 'APPLICATION_JSON'
-                                                   authentication: "${DOCKER_CREDENTIALS_ID}"
+                        try {
+                            def response = httpRequest url: "${DOCKER_REGISTRY_URL}/v2/_catalog", httpMode: 'GET', contentType: 'APPLICATION_JSON',
+                                                       authentication: "${DOCKER_CREDENTIALS_ID}"
 
-                        // Parse the JSON response
-                        def jsonResponse = readJSON text: response.content
+                            // Log the entire response
+                            echo "HTTP Response: ${response}"
 
-                        // Print out the list of repositories
-                        def repositories = jsonResponse.repositories
-                        echo "Docker Repositories:"
-                        for (repo in repositories) {
-                            echo "- ${repo}"
+                            // Parse the JSON response
+                            def jsonResponse = readJSON text: response.content
+
+                            // Print out the list of repositories
+                            def repositories = jsonResponse.repositories
+                            echo "Docker Repositories:"
+                            for (repo in repositories) {
+                                echo "- ${repo}"
+                            }
+                        } catch (Exception e) {
+                            echo "Error during HTTP request: ${e}"
                         }
                     }
                 }

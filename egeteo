@@ -1,50 +1,4 @@
 pipeline {
-
-    agent any
-
-    stages {
-
-        stage("Interactive_Input") {
-            steps {
-                script {
-
-                    // Variables for input
-                    def inputConfig
-                    def inputTest
-
-                    // Get the input
-                    def userInput = input(
-                            id: 'userInput', message: 'Enter path of test reports:?',
-                            parameters: [
-
-                                    string(defaultValue: 'None',
-                                            description: 'Path of config file',
-                                            name: 'Config'),
-                                    string(defaultValue: 'None',
-                                            description: 'Test Info file',
-                                            name: 'Test'),
-                            ])
-
-                    // Save to variables. Default to empty string if not found.
-                    inputConfig = userInput.Config?:''
-                    inputTest = userInput.Test?:''
-
-                    // Echo to console
-                    echo("IQA Sheet Path: ${inputConfig}")
-                    echo("Test Info file path: ${inputTest}")
-
-                    // Write to file
-                    writeFile file: "inputData.txt", text: "Config=${inputConfig}\r\nTest=${inputTest}"
-
-                    // Archive the file (or whatever you want to do with it)
-                    archiveArtifacts 'inputData.txt'
-                }
-            }
-        }
-    }
-}
-
-pipeline {
     agent any
     environment {
         DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'
@@ -53,25 +7,8 @@ pipeline {
     stages {
         stage('List Docker Repositories') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                        // Make an HTTP GET request to the Docker Registry API to list repositories
-                        def response = httpRequest url: "${DOCKER_REGISTRY_URL}/v2/_catalog", httpMode: 'GET', contentType: 'APPLICATION_JSON',
-                                                   authentication: "${DOCKER_CREDENTIALS_ID}"
 
-                        // Parse the JSON response
-                        def jsonResponse = readJSON text: response.content
-
-                        // Print out the list of repositories
-                        def repositories = jsonResponse.repositories
-                        echo "Docker Repositories:"
-                        for (repo in repositories) {
-                            echo "- ${repo}"
-                        }
-                    }
-                }
             }
         }
     }
 }
-
