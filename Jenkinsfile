@@ -36,8 +36,21 @@ pipeline{
         }
         stage('avelaible'){
             steps{
-                echo ("ip: ${inputIp}")
-                echo ("repo: ${inputRepo}")
+                script {
+                    def serverAvailable = false
+                    try {
+                        // Try to ping the server
+                        sh "ping -c 1 ${env.inputIp}"
+                        serverAvailable = true
+                    } catch (Exception e) {
+                        echo "Server is not available: ${e.message}"
+                    }
+
+                    if (serverAvailable) {
+                        echo "Server ${env.inputIp} is available."
+                    } else {
+                        error "Server ${env.inputIp} is not available."
+                    }
             }
         }
     }
