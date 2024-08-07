@@ -5,23 +5,40 @@ pipeline{
         DOCKER_CREDENTIALS_ID = 'iakos-registry'
         DOCKER_REGISTRY = '172.20.0.36:5000'
     }
-    // parameters{
-    //     choice(
-    //         name: 'test_Environment',
-    //         choices: ['INT','KTN','HUN'],
-    //         description: 'selections of test enviroment options'
-    //     )
-    //     choice{
-    //         name: 'doker_Repository',
-    //         choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-    //         description: 'selection of the repository'
-    //     }
-    // }
+    parameters{
+        input{
+            message "What is your first name?".
+            ok "Submit".
+            defaultValue: 'Dave',
+            name: 'FIRST_NAME',
+            trim: true
+        }
+        // choice(
+        //     name: 'ip',
+        //     choices: ['INT','KTN','HUN'],
+        //     description: 'selections of test enviroment options'
+        // )
+        choice{
+            name: 'doker_Repository',
+            choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
+            description: 'selection of the repository'
+        }
+    }
     stages{
+        // stage("input"){
+        //     steps{
+        //         script{
+        //             def inputIp
+        //             def input registry
+
+        //             def userInput = input
+        //         }
+        //     }
+        // }
         stage('Interactive deployment'){
             steps{
                 script{
-                    echo "the selected test envirament is  ${params.test_Environment}"
+                    echo "the selected test envirament is  ${params.FIRST_NAME}"
                     echo "the selected repository is ${params.doker_Repository}"
                 }
             }
