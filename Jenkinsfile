@@ -26,11 +26,11 @@ pipeline{
 
                         ]
                     )
-                    inputIp = userInput.Ip?:''
-                    inputRepo = userInput.Repo?:''
+                    env.inputIp = userInput.Ip?:''
+                    env.inputRepo = userInput.Repo?:''
 
-
-
+                    // echo ("ip: ${inputIp}")
+                    // echo ("repo: ${inputRepo}")
                 }
             }
         }
