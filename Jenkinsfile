@@ -3,7 +3,7 @@ pipeline{
     environment {
         GIT_SSH_KEY = credentials('jenkins-private-key')  
         DOCKER_CREDENTIALS_ID = 'iakos-registry' 
-        DOCKER_REGISTRY = '172.20.0.36:5000'  
+        DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'  
     }
     stages{
         stage("input"){
@@ -34,7 +34,7 @@ pipeline{
                 }
             }
         }
-        stage('available'){
+        stage('server available'){
             steps{
                 script {
                     def serverAvailable = false
@@ -50,6 +50,27 @@ pipeline{
                         echo "Server ${env.inputIp} is available."
                     } else {
                         error "Server ${env.inputIp} is not available."
+                    }
+                }
+            }
+        }
+        stage('List Docker Repositories') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                        // Make an HTTP GET request to the Docker Registry API to list repositories
+                        def response = httpRequest url: "${DOCKER_REGISTRY_URL}/v2/_catalog", httpMode: 'GET', contentType: 'APPLICATION_JSON',
+                                                   authentication: "${DOCKER_CREDENTIALS_ID}"
+
+                        // Parse the JSON response
+                        def jsonResponse = readJSON text: response.content
+
+                        // Print out the list of repositories
+                        def repositories = jsonResponse.repositories
+                        echo "Docker Repositories:"
+                        for (repo in repositories) {
+                            echo "- ${repo}"
+                        }
                     }
                 }
             }

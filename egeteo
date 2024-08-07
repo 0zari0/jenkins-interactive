@@ -44,28 +44,31 @@ pipeline {
     }
 }
 
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'
+        DOCKER_CREDENTIALS_ID = 'your-docker-credentials-id' // Jenkins credentials ID for Docker registry
+    }
+    stages {
+        stage('List Docker Repositories') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                        // Make an HTTP GET request to the Docker Registry API to list repositories
+                        def response = httpRequest url: "${DOCKER_REGISTRY_URL}/v2/_catalog", httpMode: 'GET', contentType: 'APPLICATION_JSON',
+                                                   authentication: "${DOCKER_CREDENTIALS_ID}"
 
-pipeline{
-    agent none
-    environment{
-        GIT_SSH_KEY = credentials('jenkins-private-key')
-        DOCKER_CREDENTIALS_ID = 'iakos-registry'
-        DOCKER_REGISTRY = '172.20.0.36:5000'
-    }
-    parameters{
-        choice{
-            name: 'doker_Repository',
-            choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-            description: 'selection of the repository'
-        }
-    }
-    stages{
-        stage('')
-        stage('Interactive deployment'){
-            steps{
-                script{
-                    echo "the selected test envirament is  ${params.FIRST_NAME}"
-                    echo "the selected repository is ${params.doker_Repository}"
+                        // Parse the JSON response
+                        def jsonResponse = readJSON text: response.content
+
+                        // Print out the list of repositories
+                        def repositories = jsonResponse.repositories
+                        echo "Docker Repositories:"
+                        for (repo in repositories) {
+                            echo "- ${repo}"
+                        }
+                    }
                 }
             }
         }
