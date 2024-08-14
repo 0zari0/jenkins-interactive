@@ -46,8 +46,9 @@ pipeline{
                                     name: 'Ip'),
                             choice(
                                 name: 'Repo',
-                                choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-                                description: 'selection of the repository')
+                                value: "${env.REPO_CHOICES}",
+                                // choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
+                                description: 'Select a Docker repository',
 
                         ]
                     )
