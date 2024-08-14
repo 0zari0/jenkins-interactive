@@ -49,7 +49,7 @@ pipeline{
                                 value: "${env.REPO_CHOICES}",
                                 // choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
                                 description: 'Select a Docker repository',
-
+                            )
                         ]
                     )
                     env.inputIp = userInput.Ip?:''
