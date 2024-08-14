@@ -34,7 +34,7 @@ pipeline{
         stage("input"){
             steps{
                 script{
-                    def repoList = env.REPO_CHOICES.split(',')
+                    def repoList = env.REPO_CHOICES.split(',').toList()
 
                     def userInput = input(
                         id: 'userInput', message: 'Plese fill out:?',
