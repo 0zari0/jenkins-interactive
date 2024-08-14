@@ -1,13 +1,51 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'
+        DOCKER_REGISTRY_URL = 'https://172.20.0.36:5000'
         DOCKER_CREDENTIALS_ID = 'your-docker-credentials-id' // Jenkins credentials ID for Docker registry
     }
     stages {
-        stage('List Docker Repositories') {
+        stage('Fetch Docker Repositories') {
             steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        // Fetch the list of repositories
+                        def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
 
+                        // Parse the JSON response
+                        def jsonResponse = readJSON text: response
+
+                        // Extract the repository names
+                        def repositories = jsonResponse.repositories
+                        echo "Docker Repositories:"
+                        for (repo in repositories) {
+                            echo "- ${repo}"
+                        }
+
+                        // Save the repository names as a comma-separated string
+                        env.REPO_CHOICES = repositories.join(',')
+                    }
+                }
+            }
+        }
+        stage('Select Repository') {
+            steps {
+                script {
+                    // Convert the comma-separated string to a list for the input step
+                    def repoList = env.REPO_CHOICES.split(',')
+
+                    // Use the input step to let the user select a repository
+                    def selectedRepo = input(
+                        id: 'userInput', message: 'Select a Docker repository:',
+                        parameters: [
+                            choice(name: 'Repo', choices: repoList, description: 'Select a Docker repository')
+                        ]
+                    )
+
+                    // Store the selected repository in an environment variable
+                    env.SELECTED_REPO = selectedRepo
+                    echo "Selected Repository: ${env.SELECTED_REPO}"
+                }
             }
         }
     }

@@ -34,29 +34,27 @@ pipeline{
         stage("input"){
             steps{
                 script{
-                    def inputIp
-                    def inputRepo
+                    def repoList = env.REPO_CHOICES.split(',')
 
                     def userInput = input(
                         id: 'userInput', message: 'Plese fill out:?',
                         parameters: [
-                            string(defaultValue: 'pl: 172.20.5.5',
+                            string(defaultValue: '172.20.5.5',
                                     description: 'ip of the server',
                                     trim: true,
                                     name: 'Ip'),
-                            choice(
-                                name: 'Repo',
-                                value: "${env.REPO_CHOICES}",
-                                // choices: ['jenkins2.0-hotfix','jenkins2.0-main'],
-                                description: 'Select a Docker repository',
-                            )
+                            choice(name: 'Repo',                                
+                                choices: repoList,
+                                description: 'Select a Docker repository',)
                         ]
                     )
-                    env.inputIp = userInput.Ip?:''
-                    env.inputRepo = userInput.Repo?:''
+                    // env.inputIp = userInput.Ip?:''
+                    // env.inputRepo = userInput.Repo?:''
+                    env.inputIp = userInput['Ip'] ?: ''
+                    env.inputRepo = userInput['Repo'] ?: ''
 
-                    // echo ("ip: ${inputIp}")
-                    // echo ("repo: ${inputRepo}")
+                    echo "Selected IP: ${env.inputIp}"
+                    echo "Selected Repository: ${env.inputRepo}"
                 }
             }
         }
