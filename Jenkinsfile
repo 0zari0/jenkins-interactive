@@ -69,27 +69,26 @@ pipeline{
         stage("input check"){
             steps{
                 script{
-                    boolean isIP(String str)
+                    boolean isIP(String str){
+                        try
                         {
-                            try
+                            String[] parts = str.split("\\.");
+                            if (parts.length != 4) return false;
+                            for (int i = 0; i < 4; ++i)
                             {
-                                String[] parts = str.split("\\.");
-                                if (parts.length != 4) return false;
-                                for (int i = 0; i < 4; ++i)
-                                {
-                                    int p = Integer.parseInt(parts[i]);
-                                    if (p > 255 || p < 0) return false;
-                                }
-                                return true;
-                            } catch (Exception e)
-                            {
-                                return false;
+                                int p = Integer.parseInt(parts[i]);
+                                if (p > 255 || p < 0) return false;
                             }
+                            return true;
+                        } catch (Exception e)
+                        {
+                            return false;
                         }
+                    }
                     if (isIP(env.inputImageName)){
-                        echo "Valid IP address: ${inputImageName}"
+                        echo "Valid IP address: ${env.inputImageName}"
                     }else{
-                        echo "Invalid IP address: ${inputImageName}"
+                        echo "Invalid IP address: ${env.inputImageName}"
                     }
                 }
             }
