@@ -97,3 +97,38 @@ pipeline {
         }
     }
 }
+
+pipeline {
+    agent any
+
+    stages {
+        stage("input check") {
+            steps {
+                script {
+                    def inputImageName = '192.168.1.1'  // Replace this with your actual input
+
+                    // Inline IP validation logic
+                    def isIP = { str ->
+                        try {
+                            String[] parts = str.split("\\.")
+                            if (parts.length != 4) return false
+                            for (int i = 0; i < 4; ++i) {
+                                int p = Integer.parseInt(parts[i])
+                                if (p > 255 || p < 0) return false
+                            }
+                            return true
+                        } catch (Exception e) {
+                            return false
+                        }
+                    }
+
+                    if (isIP(inputImageName)) {
+                        echo "Valid IP address: ${inputImageName}"
+                    } else {
+                        echo "Invalid IP address: ${inputImageName}"
+                    }
+                }
+            }
+        }
+    }
+}
