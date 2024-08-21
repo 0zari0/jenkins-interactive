@@ -82,10 +82,10 @@ pipeline{
                             return false
                         }
                     }
-                    if (isIP(env.inputImageName)){
-                        echo "Valid IP address: ${env.inputImageName}"
+                    if (isIP(env.env.inputIp )){
+                        echo "Valid IP address: ${env.env.inputIp }"
                     }else{
-                        echo "Invalid IP address: ${env.inputImageName}"
+                        echo "Invalid IP address: ${env.env.inputIp }"
                     }
                 }
             }
