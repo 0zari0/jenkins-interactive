@@ -47,7 +47,7 @@ pipeline{
                                 choices: repoList,
                                 description: 'Select a Docker repository',),
                             string(defaultValue: 'Image name',
-                                description: 'specifik name of the tag'
+                                description: 'specifik name of the tag',
                                 trim: true,
                                 name: 'ImageName')
                         ]
