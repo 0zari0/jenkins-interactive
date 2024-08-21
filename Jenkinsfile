@@ -85,13 +85,13 @@ pipeline{
                 }
             }
         }
-        stage('Deploy de docker container'){
-            steps{
-                script{
+        // stage('Deploy de docker container'){
+        //     steps{
+        //         script{
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
     }
 }
 
