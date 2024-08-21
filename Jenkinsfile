@@ -84,6 +84,20 @@ pipeline{
                     }
                     if (isIP(env.inputIp )){
                         echo "Valid IP address: ${env.inputIp }"
+                        def serverAvailable = false
+                        try {
+                            // Try to ping the server
+                            sh "ping -c 1 ${env.inputIp}"
+                            serverAvailable = true
+                        } catch (Exception e) {
+                            echo "Server is not c: ${e.message}"
+                        }
+
+                        if (serverAvailable) {
+                            echo "Server ${env.inputIp} is available."
+                        } else {
+                            error "Server ${env.inputIp} is not available."
+                        }
                     }else{
                         echo "Invalid IP address: ${env.inputIp }"
                     }
