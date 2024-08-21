@@ -61,15 +61,17 @@ pipeline{
                     env.inputRepo = userInput['Repo'] ?: ''
                     env.inputImageName = userInput['ImageName'] ?: ''
 
-                    echo "Selected IP: ${env.inputIp}"
-                    echo "Selected Repository: ${env.inputRepo}"
-                    echo "Selected Image name was ${env.inputImageName}"
+                    //for testing
+                    // echo "Selected IP: ${env.inputIp}"
+                    // echo "Selected Repository: ${env.inputRepo}"
+                    // echo "Selected Image name was ${env.inputImageName}"
                 }
             }
         }
         stage("servers IP check stage"){
             steps{
                 script{
+                    echo "Start of the server IP check"
                     //cheking if the IP is a valid IP
                     def isIP = { str ->
                         try {
@@ -113,7 +115,7 @@ pipeline{
             steps{
                 script{
                     echo "start of the image name check"
-                    
+
                 }
             }
         }
