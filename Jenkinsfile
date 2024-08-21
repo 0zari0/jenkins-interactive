@@ -56,9 +56,11 @@ pipeline{
                     // env.inputRepo = userInput.Repo?:''
                     env.inputIp = userInput['Ip'] ?: ''
                     env.inputRepo = userInput['Repo'] ?: ''
+                    env.inputImageNAme = userInput['ImageName'] ?: ''
 
                     echo "Selected IP: ${env.inputIp}"
                     echo "Selected Repository: ${env.inputRepo}"
+                    echo "Selected Image name was ${env.inputImageNAme}"
 
                     //inputIP is the server ip where to deploy
                     //
