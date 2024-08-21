@@ -36,7 +36,7 @@ pipeline{
                 }
             }
         }           
-        stage("input"){
+        stage("Input Stage"){
             steps{
                 script{
                     def repoList = env.REPO_CHOICES.split(',').toList()
@@ -68,7 +68,7 @@ pipeline{
                 }
             }
         }
-        stage("servers IP check stage"){
+        stage("Servers IP Check"){
             steps{
                 script{
                     echo "Start of the server IP check"
@@ -111,7 +111,7 @@ pipeline{
                 }
             }
         }
-        stage("Iamge name check"){
+        stage("Iamge Name Check"){
             steps{
                 script{
                     echo "start of the image name check"
