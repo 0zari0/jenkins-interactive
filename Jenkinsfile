@@ -58,18 +58,18 @@ pipeline{
                     )
                     env.inputIp = userInput['Ip'] ?: ''
                     env.inputRepo = userInput['Repo'] ?: ''
-                    env.inputImageNAme = userInput['ImageName'] ?: ''
+                    env.inputImageName = userInput['ImageName'] ?: ''
 
                     echo "Selected IP: ${env.inputIp}"
                     echo "Selected Repository: ${env.inputRepo}"
-                    echo "Selected Image name was ${env.inputImageNAme}"
+                    echo "Selected Image name was ${env.inputImageName}"
                 }
             }
         }
         stage("input check"){
             steps{
                 script{
-                    public static boolean isIP(String env.inputImageNAme)
+                    public static boolean isIP(String str)
                         {
                             try
                             {
@@ -86,6 +86,11 @@ pipeline{
                                 return false;
                             }
                         }
+                    if (isIP(env.inputImageName)){
+                        echo "Valid IP address: ${inputImageName}"
+                    }else{
+                        echo "Invalid IP address: ${inputImageName}"
+                    }
                 }
             }
         }
