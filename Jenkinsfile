@@ -1,10 +1,10 @@
 pipeline{
     agent any
     environment {
-        GIT_SSH_KEY = credentials('jenkins-private-key')  
-        DOCKER_CREDENTIALS_ID = 'iakos-registry' 
+        GIT_SSH_KEY = credentials('jenkins-private-key') //credentials of the git hub 
+        DOCKER_CREDENTIALS_ID = 'iakos-registry' //credentials for the registry
         DOCKER_REGISTRY_URL = 'https://172.20.0.36:5000' 
-        DOCKER_USERNAME = 'azarandok'
+        DOCKER_USERNAME = 'azarandok' 
         DOCKER_PASSWORD = 'wf81nh17roro'
     }
     stages{        
@@ -45,7 +45,11 @@ pipeline{
                                     name: 'Ip'),
                             choice(name: 'Repo',                                
                                 choices: repoList,
-                                description: 'Select a Docker repository',)
+                                description: 'Select a Docker repository',),
+                            string(defaultValue: 'Image name',
+                                description: 'specifik name of the tag'
+                                trim: true,
+                                name: 'ImageName')
                         ]
                     )
                     // env.inputIp = userInput.Ip?:''
@@ -55,6 +59,9 @@ pipeline{
 
                     echo "Selected IP: ${env.inputIp}"
                     echo "Selected Repository: ${env.inputRepo}"
+
+                    //inputIP is the server ip where to deploy
+                    //
                 }
             }
         }
@@ -78,24 +85,13 @@ pipeline{
                 }
             }
         }
-        // stage('List Docker Repositories') {
-        //     steps {
-        //         script {
-        //             // Run the curl command to get the list of Docker repositories
-        //             def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
+        stage('Deploy de docker container'){
+            steps{
+                script{
 
-        //             // Parse the JSON response
-        //             def jsonResponse = readJSON text: response
-
-        //             // Print out the list of repositories
-        //             def repositories = jsonResponse.repositories
-        //             echo "Docker Repositories:"
-        //             for (repo in repositories) {
-        //                 echo "- ${repo}"
-        //             }
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
     }
 }
 

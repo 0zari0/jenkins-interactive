@@ -28,23 +28,70 @@ pipeline {
                 }
             }
         }
-        stage('Select Repository') {
+        stage("Input") {
             steps {
                 script {
-                    // Convert the comma-separated string to a list for the input step
                     def repoList = env.REPO_CHOICES.split(',')
-
-                    // Use the input step to let the user select a repository
-                    def selectedRepo = input(
-                        id: 'userInput', message: 'Select a Docker repository:',
+                    
+                    // Use input step to capture user input
+                    def userInput = input(
+                        id: 'userInput', message: 'Please fill out:',
                         parameters: [
-                            choice(name: 'Repo', choices: repoList, description: 'Select a Docker repository')
+                            string(defaultValue: '172.20.5.5',
+                                    description: 'IP of the server',
+                                    trim: true,
+                                    name: 'Ip'),
+                            choice(name: 'Repo',
+                                choices: repoList,
+                                description: 'Select a Docker repository')
                         ]
                     )
+                    
+                    // Capture user inputs
+                    env.inputIp = userInput['Ip'] ?: ''
+                    env.inputRepo = userInput['Repo'] ?: ''
 
-                    // Store the selected repository in an environment variable
-                    env.SELECTED_REPO = selectedRepo
-                    echo "Selected Repository: ${env.SELECTED_REPO}"
+                    echo "Selected IP: ${env.inputIp}"
+                    echo "Selected Repository: ${env.inputRepo}"
+                }
+            }
+        }
+    }
+}
+
+
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY_URL = 'your-docker-registry-url'
+        DOCKER_CREDENTIALS_ID = 'docker-credentials-id'  // Jenkins credentials ID for Docker registry
+        SSH_CREDENTIALS_ID = 'ssh-credentials-id'  // Jenkins credentials ID for SSH access
+        DEPLOY_SERVER = 'server-ip-or-hostname'  // IP or hostname of the server to deploy to
+        DOCKER_IMAGE = 'your-docker-repo/your-image-name'  // Replace with your image name
+        CONTAINER_NAME = 'your-container-name'  // Name of the container to be deployed
+    }
+
+    stages {
+        stage('Pull and Deploy Docker Image') {
+            steps {
+                script {
+                    // Define the full image name with the latest tag
+                    def imageName = "${DOCKER_REGISTRY_URL}/${DOCKER_IMAGE}:latest"
+
+                    echo "Deploying Docker image ${imageName} on server ${DEPLOY_SERVER}"
+
+                    // SSH into the target server and deploy the Docker container
+                    sshagent([SSH_CREDENTIALS_ID]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no user@${DEPLOY_SERVER} \\
+                            'docker pull ${imageName} && \\
+                            docker stop ${CONTAINER_NAME} || true && \\
+                            docker rm ${CONTAINER_NAME} || true && \\
+                            docker run -d --name ${CONTAINER_NAME} ${imageName}'
+                        """
+                    }
                 }
             }
         }
