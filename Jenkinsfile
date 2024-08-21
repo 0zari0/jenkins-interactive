@@ -11,22 +11,26 @@ pipeline{
         stage('Fetch Docker Repositories') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        // Fetch the list of repositories
-                        def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
+                    try{
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            // Fetch the list of repositories
+                            def response = sh(script: "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/_catalog", returnStdout: true).trim()
 
-                        // Parse the JSON response
-                        def jsonResponse = readJSON text: response
+                            // Parse the JSON response
+                            def jsonResponse = readJSON text: response
 
-                        // Extract the repository names
-                        def repositories = jsonResponse.repositories
-                        echo "Docker Repositories:"
-                        for (repo in repositories) {
-                            echo "- ${repo}"
+                            // Extract the repository names
+                            def repositories = jsonResponse.repositories
+                            echo "Docker Repositories:"
+                            for (repo in repositories) {
+                                echo "- ${repo}"
+                            }
+
+                            // Convert the list of repositories to a string that can be used in the next step
+                            env.REPO_CHOICES = repositories.join(',')
                         }
-
-                        // Convert the list of repositories to a string that can be used in the next step
-                        env.REPO_CHOICES = repositories.join(',')
+                    } catch (Exception e){
+                        echo 'Exception occurred: ' + e.toString()
                     }
                 }
             }
@@ -46,14 +50,12 @@ pipeline{
                             choice(name: 'Repo',                                
                                 choices: repoList,
                                 description: 'Select a Docker repository',),
-                            string(defaultValue: 'Image name',
+                            string(defaultValue: 'latest',
                                 description: 'specifik name of the tag',
                                 trim: true,
                                 name: 'ImageName')
                         ]
                     )
-                    // env.inputIp = userInput.Ip?:''
-                    // env.inputRepo = userInput.Repo?:''
                     env.inputIp = userInput['Ip'] ?: ''
                     env.inputRepo = userInput['Repo'] ?: ''
                     env.inputImageNAme = userInput['ImageName'] ?: ''
@@ -61,9 +63,6 @@ pipeline{
                     echo "Selected IP: ${env.inputIp}"
                     echo "Selected Repository: ${env.inputRepo}"
                     echo "Selected Image name was ${env.inputImageNAme}"
-
-                    //inputIP is the server ip where to deploy
-                    //
                 }
             }
         }
