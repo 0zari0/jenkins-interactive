@@ -30,6 +30,7 @@ pipeline{
                             env.REPO_CHOICES = repositories.join(',')
                         }
                     } catch (Exception e){
+                        echo 'A problem occured with the repository'
                         echo 'Exception occurred: ' + e.toString()
                     }
                 }
@@ -66,9 +67,10 @@ pipeline{
                 }
             }
         }
-        stage("input check"){
+        stage("servers IP check stage"){
             steps{
                 script{
+                    //cheking if the IP is a valid IP
                     def isIP = { str ->
                         try {
                             String[] parts = str.split("\\.")
@@ -84,6 +86,8 @@ pipeline{
                     }
                     if (isIP(env.inputIp )){
                         echo "Valid IP address: ${env.inputIp }"
+
+                        //if the ip is valid then this is checking if the server on the ip is up by ping
                         def serverAvailable = false
                         try {
                             // Try to ping the server
@@ -100,30 +104,39 @@ pipeline{
                         }
                     }else{
                         echo "Invalid IP address: ${env.inputIp }"
+                        echo "Please give a correct IP"
                     }
                 }
             }
         }
-        stage('server available'){
+        stage("Iamge name check"){
             steps{
-                script {
-                    def serverAvailable = false
-                    try {
-                        // Try to ping the server
-                        sh "ping -c 1 ${env.inputIp}"
-                        serverAvailable = true
-                    } catch (Exception e) {
-                        echo "Server is not c: ${e.message}"
-                    }
-
-                    if (serverAvailable) {
-                        echo "Server ${env.inputIp} is available."
-                    } else {
-                        error "Server ${env.inputIp} is not available."
-                    }
+                script{
+                    echo "start of the image name check"
+                    
                 }
             }
         }
+        // stage('server available'){
+        //     steps{
+        //         script {
+        //             def serverAvailable = false
+        //             try {
+        //                 // Try to ping the server
+        //                 sh "ping -c 1 ${env.inputIp}"
+        //                 serverAvailable = true
+        //             } catch (Exception e) {
+        //                 echo "Server is not c: ${e.message}"
+        //             }
+
+        //             if (serverAvailable) {
+        //                 echo "Server ${env.inputIp} is available."
+        //             } else {
+        //                 error "Server ${env.inputIp} is not available."
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Deploy de docker container'){
         //     steps{
         //         script{
