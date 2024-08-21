@@ -69,7 +69,7 @@ pipeline{
         stage("input check"){
             steps{
                 script{
-                    public static boolean isIP(String str)
+                    boolean isIP(String str)
                         {
                             try
                             {
