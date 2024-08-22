@@ -114,38 +114,18 @@ pipeline{
         stage("Iamge Name Check"){
             steps{
                 script{
-                    echo "start of the image name check"
+                    echo "Start of the image name check"
 
                 }
             }
         }
-        // stage('server available'){
-        //     steps{
-        //         script {
-        //             def serverAvailable = false
-        //             try {
-        //                 // Try to ping the server
-        //                 sh "ping -c 1 ${env.inputIp}"
-        //                 serverAvailable = true
-        //             } catch (Exception e) {
-        //                 echo "Server is not c: ${e.message}"
-        //             }
-
-        //             if (serverAvailable) {
-        //                 echo "Server ${env.inputIp} is available."
-        //             } else {
-        //                 error "Server ${env.inputIp} is not available."
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Deploy de docker container'){
-        //     steps{
-        //         script{
-
-        //         }
-        //     }
-        // }
+        stage('Deploy the docker container'){
+            steps{
+                script{
+                    echo "Start of the deploy stage"
+                }
+            }
+        }
     }
 }
 
