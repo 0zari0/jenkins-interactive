@@ -17,3 +17,5 @@ stage('Check if Image Exists') {
                 }
             }
         }
+
+        curl -s -u azarandok:wf81nh17roro 172.20.0.36:5000/v2/${env.IMAGE_NAME}/tags/list

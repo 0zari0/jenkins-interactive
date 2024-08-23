@@ -126,7 +126,7 @@ pipeline{
                     script {
                         withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                             // Use curl to check if the image exists in the registry
-                            def imageCheckCmd = "curl -s -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.IMAGE_NAME}/tags/list"
+                            def imageCheckCmd = "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.inputRepo}/tags/list"
                             def response = sh(script: imageCheckCmd, returnStdout: true).trim()
                             def jsonResponse = readJSON text: response
 
