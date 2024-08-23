@@ -125,7 +125,7 @@ pipeline{
                     echo "Start of the deploy stage"
                     withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         // Use curl to get the list of tags for the image
-                        def tagCheckCmd = "curl -s -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.inputRepo}/tags/list"
+                        def tagCheckCmd = "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.inputRepo}/tags/list"
                         def response = sh(script: tagCheckCmd, returnStdout: true).trim()
                         def jsonResponse = readJSON text: response
 
