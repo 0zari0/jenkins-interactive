@@ -123,6 +123,20 @@ pipeline{
             steps{
                 script{
                     echo "Start of the deploy stage"
+                    script {
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            // Use curl to check if the image exists in the registry
+                            def imageCheckCmd = "curl -s -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.IMAGE_NAME}/tags/list"
+                            def response = sh(script: imageCheckCmd, returnStdout: true).trim()
+                            def jsonResponse = readJSON text: response
+
+                            if (jsonResponse.errors) {
+                                error "Image '${env.IMAGE_NAME}' does not exist in the Docker registry."
+                            } else {
+                                echo "Image '${env.IMAGE_NAME}' exists in the Docker registry."
+                            }
+                        }
+                    }
                 }
             }
         }
