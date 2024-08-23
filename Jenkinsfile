@@ -54,12 +54,12 @@ pipeline{
                             string(defaultValue: 'latest',
                                 description: 'specifik name of the tag',
                                 trim: true,
-                                name: 'ImageName')
+                                name: 'ImageTag')
                         ]
                     )
                     env.inputIp = userInput['Ip'] ?: ''
                     env.inputRepo = userInput['Repo'] ?: ''
-                    env.inputImageName = userInput['ImageName'] ?: ''
+                    env.inputTag = userInput['ImageTag'] ?: ''
 
                     //for testing
                     // echo "Selected IP: ${env.inputIp}"
@@ -86,8 +86,8 @@ pipeline{
                             return false
                         }
                     }
-                    if (isIP(env.inputIp )){
-                        echo "Valid IP address: ${env.inputIp }"
+                    if (isIP(env.inputIp)){
+                        echo "Valid IP address: ${env.inputIp}"
 
                         //if the ip is valid then this is checking if the server on the ip is up by ping
                         def serverAvailable = false
@@ -123,17 +123,20 @@ pipeline{
             steps{
                 script{
                     echo "Start of the deploy stage"
-                    script {
-                        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                            // Use curl to check if the image exists in the registry
-                            def imageCheckCmd = "curl -k -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.inputRepo}/tags/list"
-                            def response = sh(script: imageCheckCmd, returnStdout: true).trim()
-                            def jsonResponse = readJSON text: response
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        // Use curl to get the list of tags for the image
+                        def tagCheckCmd = "curl -s -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL}/v2/${env.inputRepo}/tags/list"
+                        def response = sh(script: tagCheckCmd, returnStdout: true).trim()
+                        def jsonResponse = readJSON text: response
 
-                            if (jsonResponse.errors) {
-                                error "Image '${env.IMAGE_NAME}' does not exist in the Docker registry."
+                        if (jsonResponse.errors) {
+                            error "Image '${env.inputRepo}' does not exist in the Docker registry."
+                        } else {
+                            def tags = jsonResponse.tags
+                            if (tags.contains(env.inputTag)) {
+                                echo "Tag '${env.inputTag}' exists for image '${env.inputRepo}' in the Docker registry."
                             } else {
-                                echo "Image '${env.IMAGE_NAME}' exists in the Docker registry."
+                                error "Tag '${env.inputTag}' does not exist for image '${env.inputRepo}' in the Docker registry."
                             }
                         }
                     }
