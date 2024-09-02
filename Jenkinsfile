@@ -62,9 +62,9 @@ pipeline{
                     env.inputTag = userInput['ImageTag'] ?: ''
 
                     //for testing
-                    // echo "Selected IP: ${env.inputIp}"
-                    // echo "Selected Repository: ${env.inputRepo}"
-                    // echo "Selected Image name was ${env.inputImageName}"
+                    echo "Selected IP: ${env.inputIp}"
+                    echo "Selected Repository: ${env.inputRepo}"
+                    echo "Selected Image name was ${env.inputImageName}"
                 }
             }
         }
