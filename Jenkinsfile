@@ -151,7 +151,7 @@ pipeline{
                             echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag}"
                             echo "passs: ${SSH_PASSWORD}"
                             
-                            /usr/bin/sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
+                            /usr/bin/sshpass -p '${SSH_PASSWORD}' /usr/bin/ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
                             "docker pull ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag} && \\
                             docker stop ${env.IMAGE_NAME} || true && \\
                             docker rm ${env.IMAGE_NAME} || true && \\
