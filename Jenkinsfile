@@ -152,6 +152,7 @@ pipeline{
                              docker rm ${env.IMAGE_NAME} || true && \\
                              docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                         """
+                    }
                 }
             }
         }
