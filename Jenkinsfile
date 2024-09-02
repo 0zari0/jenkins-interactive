@@ -140,6 +140,7 @@ pipeline{
             steps{
                 script{
                     echo "Start of the deploy stage"
+                    echo "docker run -d --name java ${DOCKER_REGISTRY_URL}/${env.inputRepo}-${env.inputTag}"
 
                 }
             }
