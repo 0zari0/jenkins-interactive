@@ -4,6 +4,7 @@ pipeline{
         GIT_SSH_KEY = credentials('jenkins-private-key') //credentials of the git hub 
         DOCKER_CREDENTIALS_ID = 'iakos-registry' //credentials for the registry
         DOCKER_REGISTRY_URL = 'https://172.20.0.36:5000' 
+        DOCKER_REGISTRY = '172.20.0.36:5000'
         DOCKER_USERNAME = 'azarandok' 
         DOCKER_PASSWORD = 'wf81nh17roro'
         SSH_CREDENTIALS_ID = 'test_credential'
@@ -148,14 +149,14 @@ pipeline{
                         sh """
                             echo "Using SSH user: ${SSH_USER}"
                             echo "Connecting to server: ${env.inputIp}"
-                            echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag}"
+                            echo "Pulling Docker image: ${DOCKER_REGISTRY}/${env.inputRepo}:${env.inputTag}"
                             echo "passs: ${SSH_PASSWORD}"
                             
                             /usr/bin/sshpass -p '${SSH_PASSWORD}' /usr/bin/ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
-                            "docker pull ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag} && \\
+                            "docker pull ${DOCKER_REGISTRY}/${env.inputRepo}:${env.inputTag} && \\
                             docker stop ${env.IMAGE_NAME} || true && \\
                             docker rm ${env.IMAGE_NAME} || true && \\
-                            docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag}"
+                            docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY}/${env.inputRepo}:${env.inputTag}"
                         """
                     }
                 }
