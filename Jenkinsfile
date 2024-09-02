@@ -147,14 +147,14 @@ pipeline{
                         sh '''
                             echo "Using SSH user: ${SSH_USER}"
                             echo "Connecting to server: ${SERVER_IP}"
-                            echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+                            echo "Pulling Docker image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
                             ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "
                                 docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL} && \
-                                docker pull ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} && \
+                                docker pull ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} && \
                                 docker stop ${IMAGE_NAME} || true && \
                                 docker rm ${IMAGE_NAME} || true && \
-                                docker run -d --name ${IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                                docker run -d --name ${IMAGE_NAME} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
                             "
                         '''
                     }
