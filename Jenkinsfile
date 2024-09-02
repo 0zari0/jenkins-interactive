@@ -58,7 +58,7 @@ pipeline{
                         ]
                     )
                     env.inputIp = userInput['Ip'] ?: ''
-                    env.inputRepo = userInput['Repo'] ?: ''
+                    env.inputRepo = userInput['Repo'].replaceALL('"','') ?: ''
                     env.inputTag = userInput['ImageTag'] ?: ''
 
                     //for testing
