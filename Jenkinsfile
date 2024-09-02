@@ -172,7 +172,7 @@ pipeline {
     agent any
     environment {
         GIT_SSH_KEY = credentials('jenkins-private-key') //credentials of the git hub 
-        DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'
+        DOCKER_REGISTRY_URL = '172.20.0.36:5000'
         SSH_CREDENTIALS_ID = 'test-key' // The ID of the SSH key credential
         SSH_USER = 'mcm-root' // SSH user
         SERVER_IP = '172.20.0.52' // The IP address of the target server
