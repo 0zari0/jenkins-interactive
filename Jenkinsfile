@@ -178,6 +178,8 @@ pipeline {
         SERVER_IP = '172.20.0.52' // The IP address of the target server
         IMAGE_NAME = 'jenkins2.0-main'
         IMAGE_TAG = 'latest'
+        DOCKER_USERNAME = 'azarandok' // Docker registry username
+        DOCKER_PASSWORD = 'wf81nh17roro' // Docker registry password 
     }
     stages {
         stage('Deploy Docker Image') {
@@ -189,11 +191,13 @@ pipeline {
                             echo "Connecting to server: ${SERVER_IP}"
                             echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} \
-                            "docker pull ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} && \
-                             docker stop ${IMAGE_NAME} || true && \
-                             docker rm ${IMAGE_NAME} || true && \
-                             docker run -d --name ${IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "
+                                docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_REGISTRY_URL} && \
+                                docker pull ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} && \
+                                docker stop ${IMAGE_NAME} || true && \
+                                docker rm ${IMAGE_NAME} || true && \
+                                docker run -d --name ${IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                            "
                         '''
                     }
                 }
