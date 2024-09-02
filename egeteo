@@ -71,3 +71,31 @@ pipeline {
         }
     }
 }
+
+
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY_URL = 'http://172.20.0.36:5000'
+        DOCKER_CREDENTIALS_ID = 'your-docker-credentials-id'
+        SSH_CREDENTIALS_ID = 'your-ssh-key-credentials-id' // SSH key credentials
+    }
+    stages {
+        stage('Deploy Image to Server') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: "${SSH_CREDENTIALS_ID}", keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                        // Deploy the Docker container to the specified server using SSH keys
+                        sh """
+                            ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
+                            "docker pull ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG} && \\
+                             docker stop ${env.IMAGE_NAME} || true && \\
+                             docker rm ${env.IMAGE_NAME} || true && \\
+                             docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                        """
+                    }
+                }
+            }
+        }
+    }
+}

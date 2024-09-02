@@ -45,7 +45,7 @@ pipeline{
                     def userInput = input(
                         id: 'userInput', message: 'Plese fill out:?',
                         parameters: [
-                            string(defaultValue: '172.20.5.5',
+                            string(defaultValue: '172.20.0.52',
                                     description: 'ip of the server',
                                     trim: true,
                                     name: 'Ip'),
