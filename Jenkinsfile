@@ -146,15 +146,15 @@ pipeline{
                     sshagent([SSH_CREDENTIALS_ID]) {
                         sh '''
                             echo "Using SSH user: ${SSH_USER}"
-                            echo "Connecting to server: ${SERVER_IP}"
-                            echo "Pulling Docker image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+                            echo "Connecting to server: ${inputIp}"
+                            echo "Pulling Docker image: ${DOCKER_REGISTRY}/${inputRepo}:${inputTag}"
 
-                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${inputIp} "
                                 docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_REGISTRY} && \
-                                docker pull ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} && \
-                                docker stop ${IMAGE_NAME} || true && \
-                                docker rm ${IMAGE_NAME} || true && \
-                                docker run -d --name ${IMAGE_NAME} ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+                                docker pull ${DOCKER_REGISTRY}/${inputRepo}:${inputTag} && \
+                                docker stop ${inputRepo} || true && \
+                                docker rm ${inputRepo} || true && \
+                                docker run -d --name ${inputRepo} ${DOCKER_REGISTRY}/${inputRepo}:${inputTag}
                             "
                         '''
                     }
