@@ -6,6 +6,7 @@ pipeline{
         DOCKER_REGISTRY_URL = 'https://172.20.0.36:5000' 
         DOCKER_USERNAME = 'azarandok' 
         DOCKER_PASSWORD = 'wf81nh17roro'
+        SSH_CREDENTIALS_ID = 'test_credential'
     }
     stages{        
         stage('Fetch Docker Repositories') {
@@ -62,9 +63,9 @@ pipeline{
                     env.inputTag = userInput['ImageTag'] ?: ''
 
                     //for testing
-                    echo "Selected IP: ${env.inputIp}"
-                    echo "Selected Repository: ${env.inputRepo}"
-                    echo "Selected Image name was ${env.inputImageName}"
+                    // echo "Selected IP: ${env.inputIp}"
+                    // echo "Selected Repository: ${env.inputRepo}"
+                    // echo "Selected Image name was ${env.inputImageName}"
                 }
             }
         }
@@ -140,8 +141,17 @@ pipeline{
             steps{
                 script{
                     echo "Start of the deploy stage"
-                    echo "docker run -d --name java ${DOCKER_REGISTRY_URL}/${env.inputRepo}-${env.inputTag}"
-
+                    // echo "docker run -d --name java ${DOCKER_REGISTRY_URL}/${env.inputRepo}-${env.inputTag}"
+                    // Deploy the Docker container to the specified server
+                    withCredentials([usernamePassword(credentialsId: "${SSH_CREDENTIALS_ID}", passwordVariable: 'SSH_PASSWORD', usernameVariable: 'SSH_USER')]) {
+                        // Deploy the Docker container to the specified server using sshpass
+                        sh """
+                            sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
+                            "docker pull ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG} && \\
+                             docker stop ${env.IMAGE_NAME} || true && \\
+                             docker rm ${env.IMAGE_NAME} || true && \\
+                             docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                        """
                 }
             }
         }
