@@ -147,14 +147,14 @@ pipeline{
                         // Deploy the Docker container to the specified server using sshpass
                         sh """
                             echo "Using SSH user: ${SSH_USER}"
-                            echo "Connecting to server: ${env.SERVER_IP}"
-                            echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                            echo "Connecting to server: ${env.inputIp}"
+                            echo "Pulling Docker image: ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag}"
                             
                             /usr/bin/sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
-                            "docker pull ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG} && \\
+                            "docker pull ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag} && \\
                             docker stop ${env.IMAGE_NAME} || true && \\
                             docker rm ${env.IMAGE_NAME} || true && \\
-                            docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                            docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.inputRepo}:${env.inputTag}"
                         """
                     }
                 }
