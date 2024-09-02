@@ -146,11 +146,11 @@ pipeline{
                     withCredentials([usernamePassword(credentialsId: "${SSH_CREDENTIALS_ID}", passwordVariable: 'SSH_PASSWORD', usernameVariable: 'SSH_USER')]) {
                         // Deploy the Docker container to the specified server using sshpass
                         sh """
-                            sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
+                            /usr/bin/sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${env.SERVER_IP} \\
                             "docker pull ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG} && \\
-                             docker stop ${env.IMAGE_NAME} || true && \\
-                             docker rm ${env.IMAGE_NAME} || true && \\
-                             docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                            docker stop ${env.IMAGE_NAME} || true && \\
+                            docker rm ${env.IMAGE_NAME} || true && \\
+                            docker run -d --name ${env.IMAGE_NAME} ${DOCKER_REGISTRY_URL}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                         """
                     }
                 }
